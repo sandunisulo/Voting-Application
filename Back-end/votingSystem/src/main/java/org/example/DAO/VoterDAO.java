@@ -84,5 +84,67 @@ public class VoterDAO {
             }
         }
     }
+
+    //login
+    public boolean userLogin(String userName,String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = null;
+
+        String check = "SELECT password " + "FROM voter where userName = \'" + userName + "\'";
+        connection = DriverManager.getConnection(jdbcUrl,jdbcUserName,jdbcPassword);
+
+        ResultSet saveData;
+        saveData = connection.createStatement().executeQuery(check);
+        String savePassword = null;
+        if(saveData.next()){
+            savePassword = saveData.getString("password");
+            System.out.println(savePassword);
+        }
+        if(connection!= null){
+            connection.close();
+        }
+
+        //check password correct
+        if(password.equals(savePassword)){
+            return true;
+
+        }else{
+            return false;
+
+        }
+
+
+    }
+
+    //change password
+    public boolean changePassword(String userName,String password,String newPassword) throws ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        boolean outPut;
+
+        try{
+            connection = DriverManager.getConnection(jdbcUrl,jdbcUserName,jdbcPassword);
+
+            if(userLogin(userName,password)){
+                String sql = "update voter" +" set password = " + newPassword +  " where userName = \'" + userName + "\'";
+                preparedStatement = connection.prepareStatement(sql);
+                System.out.println(sql);
+
+                outPut = preparedStatement.execute();
+                System.out.println(sql);
+            }else {
+                System.out.println("old Pass word incorrect !");
+                outPut = false;
+            }
+
+        }catch(SQLException e){
+            outPut = false;
+            System.out.println(e);
+        }
+
+        return outPut;
+    }
 }
 

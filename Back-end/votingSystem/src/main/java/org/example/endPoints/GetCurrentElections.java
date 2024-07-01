@@ -1,7 +1,6 @@
 package org.example.endPoints;
 
-
-import org.example.DAO.VoterDAO;
+import org.example.DAO.ElectionDAO;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -10,20 +9,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-
-@WebServlet("/admin/addUser")
-public class AddUser extends HttpServlet{
+@WebServlet("/showAllElections")
+public class GetCurrentElections extends HttpServlet{
     protected void doGet(HttpServletRequest request, HttpServletResponse responseToFront) throws ServletException,IOException{
-        String userName = request.getParameter("userName");
-        String password = userName;
-        String email = request.getParameter("email");
 
-        VoterDAO addUserDAO = new VoterDAO();
+        ElectionDAO electionDAO = new ElectionDAO();
+        String s = null;
         try {
-            addUserDAO.saveUser(userName,password,email);
+            s = electionDAO.showElections();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println(s);
     }
 }
